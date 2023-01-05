@@ -7,16 +7,23 @@ const logger = require("morgan");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const catalogRouter = require("./routes/catalog"); //Import routes for "catalog" area of site
+const compression = require("compression");
+const helmet = require("helmet");
 
 const app = express();
+app.use(helmet());
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
+mongoose.set("strictQuery", true);
+
 const mongoDB =
   "mongodb+srv://admin:VjPY72tPv94pQdL0@cluster0.uemgdcy.mongodb.net/local_library?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+app.use(compression()); // Compress all routes
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
